@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlanetHero App - Design Final Aprimorado</title>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+
+<style>
+/* ===========================
+    ESTILO DO CONTAINER DO CELULAR (CORRIGIDO)
+=========================== */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5; 
+    font-family: 'Poppins', sans-serif;
+}
+
+.phone-container {
+    width: 375px; 
+    height: 667px; 
+    border: 5px solid #333; 
+    border-radius: 40px; 
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+    background-color: white; /* GARANTINDO QUE TENHA COR */
+    position: relative;
+    overflow: hidden;
+    padding: 0; 
+    box-sizing: content-box;
+}
+
+.screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 35px;
+    background-color: var(--bg-light); /* Fundo claro para o conteúdo do app */
+    overflow: hidden;
+    position: relative;
+}
+
+.notch { 
+    width: 130px;
+    height: 15px; 
+    background: black;
+    border-radius: 0 0 10px 10px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
+/* ===========================
+    ESTILOS DO APLICATIVO (Design Aprimorado)
+=========================== */
+:root {
+    --green-primary: #196f33; /* Verde Mais Escuro e Rico */
+    --green-dark: #115024;    /* Para Botões */
+    --bg-light: #F8F8F8;      /* Fundo muito leve */
+    --text-dark: #2c2c2c;
+    --text-primary: #196f33;
+    --card-bg: #FFFFFF;
+    --card-shadow: 0 6px 15px rgba(0,0,0,0.1); /* Sombra mais elegante */
+    --icon-size: 26px;
+    --red-alert: #CC0000;
+    --yellow-alert: #FFC107;
+}
+
+/* Base das pginas */
+.page {
+    display: none;
+    width: 100%;
+    height: 100%; 
+    overflow-y: auto;
+    padding-bottom: 10px; 
+    background-color: var(--bg-light);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--text-dark);
+}
+
+.page.has-navbar {
+    height: calc(100% - 60px); 
+    padding-bottom: 10px; 
+}
+
+.page.active {
+    display: block; 
+}
+
+/* Auth Pages (Login/Cadastro) */
+#login, #cadastro {
+    /* CORREÇÃO: Removendo o 'display: none' inicial para que uma delas seja renderizada antes do JS */
+    /* Deixando o display: flex no .active para garantir que o conteúdo centralize */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%; 
+    overflow-y: hidden; 
+    padding: 0 30px;
+    box-sizing: border-box;
+    background-color: var(--bg-light); 
+    text-align: center;
+}
+#login.active, #cadastro.active {
+    display: flex; 
+}
+
+
+.auth-input-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.auth-input-group span {
+    color: var(--green-primary);
+    padding: 0 10px;
+}
+.auth-input-group input {
+    border: none;
+    padding: 12px 0;
+    font-size: 14px;
+    flex-grow: 1;
+    background: transparent;
+    outline: none;
+}
+.auth-logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 10px;
+}
+.auth-title {
+    font-size: 20px;
+    color: var(--text-dark);
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+.auth-link {
+    font-size: 13px;
+    color: #555;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+
+/* Cabealho */
+.header {
+    background-color: var(--green-primary);
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    /* Mantendo padding superior para espaçamento abaixo da notch/barra de status */
+    padding-top: 30px; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border-radius: 0 0 20px 20px; 
+}
+
+.header-back {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    text-decoration: none;
+    font-size: 28px;
+    font-weight: normal;
+}
+
+/* Cards de Contedo (Geral) */
+.card {
+    background-color: var(--card-bg);
+    border-radius: 20px; 
+    padding: 20px;
+    margin: 15px;
+    box-shadow: var(--card-shadow);
+    line-height: 1.5;
+}
+
+.section-title {
+    color: var(--text-dark); 
+    font-weight: 700;
+    font-size: 18px;
+    margin: 25px 15px 10px 15px;
+    border-left: 5px solid var(--green-primary);
+    padding-left: 10px;
+}
+/* Adicionando espaçamento superior aos primeiros cards logo após o header */
+#home .section-title:first-of-type,
+#conquista .achievement-level,
+#ranking-detalhe .ranking-list,
+#nivel-tabela .card,
+#medalhas-detalhe .ranking-list,
+#feedback .card,
+#selecao-avatar .card { /* Adicionado seletor para a nova pág */
+    margin-top: 25px; /* Padrão de espaçamento */
+}
+
+
+/* HOME PAGE - Checklist Unificado */
+.checklist-card {
+    padding-top: 5px;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding: 12px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+.checklist-item:hover {
+    background-color: #f7f7f7;
+}
+.checklist-item:last-child {
+    border-bottom: none;
+}
+
+/* CORREÇÃO 1: Checkbox */
+.checklist-item input[type="checkbox"] {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--green-primary);
+    border-radius: 6px;
+    margin-right: 15px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    font-family: 'Material Icons'; /* Necessário para usar ícone no content */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0; /* Esconde qualquer texto base */
+}
+
+.checklist-item input[type="checkbox"]:checked {
+    background-color: var(--green-primary);
+    border-color: var(--green-primary);
+    font-size: 14px; /* Mostra o ícone no content */
+}
+
+.checklist-item input[type="checkbox"]:checked::after {
+    /* CORREÇÃO: Substitui '?' por 'done' (código unicode) */
+    content: '\e876'; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 16px; /* Aumentado um pouco para visibilidade */
+    font-weight: normal;
+}
+
+.checklist-item img {
+    width: 30px; 
+    height: 30px;
+    margin-right: 10px;
+    border-radius: 50%;
+    padding: 5px;
+    background-color: var(--bg-light);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.checklist-item label {
+    flex-grow: 1;
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.points-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--green-dark);
+    background-color: #e6ffe6; /* Fundo mais claro para destaque */
+    padding: 3px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+/* Botão de Envio/Ação Principal */
+.submit-btn {
+    background-color: var(--green-dark);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 15px; 
+    font-weight: 700;
+    width: calc(100% - 30px);
+    margin: 15px;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s;
+}
+.submit-btn:active {
+    background-color: var(--green-primary);
+}
+
+/* ===========================
+    ESTILOS ESPECÍFICOS POR PÁGINA
+=========================== */
+
+/* Conteúdos Educativos */
+.educational-content-card {
+    text-align: center;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 25px 15px;
+    font-size: 16px;
+    transition: transform 0.2s;
+}
+.educational-content-card:active {
+    transform: translateY(2px);
+}
+
+.content-card-detail {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+.content-card-detail:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.content-card-detail img {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+.content-card-detail h3 {
+    margin: 0 0 5px 0;
+    font-size: 15px;
+    color: var(--green-dark);
+}
+.content-card-detail p {
+    margin: 0;
+    font-size: 13px;
+    color: #555;
+}
+
+
+/* Conquista */
+.achievement-level {
+    text-align: center;
+    padding: 30px 20px;
+    margin: 25px 15px 15px 15px; /* Este margin-top: 25px j ajuda */
+    background: linear-gradient(145deg, var(--green-primary), var(--green-dark));
+    color: white;
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    position: relative; 
+}
+.level-badge {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+.level-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.points-value {
+    font-size: 14px;
+    opacity: 0.8;
+}
+.level-table-icon {
+    /* CORREÇÃO 2: Estilo para exibir ícone do Material Icons */
+    font-family: 'Material Icons'; 
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: normal; /* Sobrescreve o 700 de .header */
+}
+
+.achievement-button {
+    display: flex;
+    align-items: center;
+    width: calc(100% - 30px);
+    margin: 15px;
+    padding: 15px;
+    background-color: var(--card-bg);
+    border: none;
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.achievement-button:hover {
+    background-color: #f0f0f0;
+}
+.achievement-button img {
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+    filter: invert(20%) sepia(35%) saturate(1000%) hue-rotate(100deg) brightness(80%); /* Tonalidade verde */
+}
+
+
+/* Ranking */
+.ranking-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px;
+}
+.ranking-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--card-bg);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    font-size: 15px;
+    font-weight: 600;
+}
+.ranking-item.user-highlight {
+    border: 2px solid var(--green-primary);
+    background-color: #e6ffe6;
+}
+.rank-number {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--green-dark);
+    width: 30px;
+    text-align: center;
+}
+.rank-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin-left: 10px;
+}
+.rank-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.rank-points {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+/* Medalhas */
+#medalhas-container {
+    padding: 15px;
+}
+.medal-item {
+    display: flex;
+    align-items: center;
+    background-color: var(--card-bg);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.medal-item img {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+
+/* Perfil */
+#perfil .header {
+    /* CORREÇÃO: Removido position: sticky para que o profile-info possa ser empurrado para baixo */
+    position: static; 
+    border-radius: 0 0 20px 20px; 
+    /* Adicionando espaçamento inferior ao header da página Perfil para dar respiro */
+    margin-bottom: 0;
+    padding-bottom: 15px;
+}
+
+.profile-info {
+    text-align: center;
+    /* Margem superior para afastar do 'header' fixo */
+    margin-top: 25px; 
+    padding-top: 30px;
+    /* AUMENTADO: Espaamento para afastar do card de resumo */
+    padding-bottom: 40px; 
+    background-color: var(--green-primary);
+    color: white;
+    /* Redefinido para o padro (pode ser removido, mas mantenho para clareza) */
+    margin-bottom: 0; 
+    border-radius: 20px; /* Alterado de 0 0 25px 25px para 20px para parecer um card abaixo do header */
+    margin-left: 15px;
+    margin-right: 15px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    position: relative; /* Adicionado para posicionar o ícone da câmera */
+}
+.profile-avatar {
+    /* Adicionado estilo para o avatar */
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 10px auto; 
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* Para a imagem do avatar */
+}
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+/* Estilo para o ícone da câmera */
+.edit-avatar-icon {
+    position: absolute;
+    /* MUDANÇA AQUI: Ajuste para o lado ESQUERDO */
+    left: 110px; /* Ajuste para o lado esquerdo do avatar */
+    top: 60px; /* Ajuste vertical */
+    background-color: white;
+    color: var(--green-primary);
+    border-radius: 50%;
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1; /* Para centralizar o ícone */
+}
+/* FIM DOS ESTILOS ADICIONADOS PARA AVATAR */
+
+.profile-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+.profile-email {
+    font-size: 14px;
+    opacity: 0.8;
+    margin: 5px 0 0 0;
+}
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 15px;
+}
+.summary-item:last-child {
+    border-bottom: none;
+}
+.summary-item span:nth-child(2) {
+    font-weight: 600;
+    color: var(--green-dark);
+}
+
+.feedback-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% - 30px);
+    margin: 15px;
+    padding: 15px;
+    background-color: var(--card-bg);
+    border: none;
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.feedback-button:hover {
+    background-color: #f0f0f0;
+}
+
+/* Tabela de Níveis (Estilo de lista de cartões) */
+.level-card-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--card-bg);
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.level-card-item span:nth-child(2) {
+    color: var(--green-dark);
+    font-weight: 700;
+}
+
+/* Novo Estilo: Seleção de Avatar */
+.avatar-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 15px;
+    padding: 15px;
+    text-align: center;
+}
+
+.avatar-card {
+    background-color: var(--bg-light);
+    border: 3px solid transparent; 
+    border-radius: 15px;
+    padding: 15px 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.avatar-card.selected {
+    border-color: var(--green-primary); 
+    box-shadow: 0 0 10px rgba(25, 111, 51, 0.8);
+}
+/* NOVO ESTILO PARA AVATAR BLOQUEADO/COMPRA */
+.avatar-card.locked {
+    opacity: 0.8;
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+.avatar-card.locked:hover {
+    box-shadow: none;
+}
+.avatar-card.locked.selected { 
+    border-color: #aaa; /* Borda cinza suave se estiver bloqueado */
+    box-shadow: none;
+}
+
+.avatar-card .cost-btn {
+    display: inline-block;
+    color: white; 
+    border: none; 
+    padding: 5px 10px; 
+    border-radius: 8px; 
+    font-size: 12px; 
+    font-weight: 600; 
+    cursor: pointer;
+    margin-top: 5px;
+    transition: background-color 0.2s;
+}
+
+.avatar-card .cost-r {
+    background-color: var(--green-primary);
+}
+
+.avatar-card .cost-points {
+    background-color: var(--yellow-alert);
+    color: var(--text-dark);
+}
+
+.avatar-card .cost-btn:active {
+    opacity: 0.8;
+}
+
+/* FIM NOVO ESTILO */
+
+.avatar-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.avatar-card p {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+/* NOVO ESTILO PARA AVISO DE DOAÇÃO */
+.donation-notice {
+    font-size: 12px;
+    color: #555;
+    text-align: center;
+    padding: 10px;
+    margin: 0 15px;
+    background-color: #fff8e1; /* Cor de aviso suave */
+    border-radius: 10px;
+    border: 1px solid #ffe0b2;
+}
+
+/* ===========================
+    NAVBAR
+=========================== */
+.navbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: var(--card-bg);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+    border-top: 1px solid #eee;
+    z-index: 20; 
+    display: none; 
+}
+
+.nav-item {
+    text-align: center;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s;
+}
+
+.nav-item .material-icons {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    font-size: var(--icon-size);
+    color: #888;
+    transition: color 0.3s;
+}
+
+.nav-item.active .material-icons {
+    color: var(--green-primary);
+}
+
+
+/* ===========================
+    ESTILO DO MODAL CUSTOM-ALERT
+=========================== */
+.custom-alert-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: none; /* Inicia oculto */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.custom-alert-box {
+    background: white;
+    border-radius: 20px;
+    width: 80%;
+    max-width: 300px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.2s ease-out;
+}
+
+.custom-alert-overlay.visible .custom-alert-box {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.custom-alert-icon {
+    font-family: 'Material Icons';
+    font-size: 48px;
+    margin-bottom: 10px;
+    line-height: 1;
+}
+
+.custom-alert-box.success .custom-alert-icon {
+    color: var(--green-primary);
+}
+.custom-alert-box.error .custom-alert-icon,
+.custom-alert-box.info .custom-alert-icon {
+    color: var(--yellow-alert);
+}
+
+.custom-alert-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.custom-alert-message {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.custom-alert-btn {
+    background-color: var(--green-primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+.custom-alert-btn:active {
+    background-color: var(--green-dark);
+}
+
+</style>
+</head>
+<body>
+
+<div class="phone-container">
+    <div class="screen">
+        <div class="notch"></div>
+
+        <div id="login" class="page auth-page active"> 
+            <div class="auth-logo">PLANETHERO</div>
+            <div class="auth-title">LOGIN</div>
+
+            <p id="login-error" class="auth-error" style="display:none; color: red;">Email ou senha inválidos.</p>
+
+            <div class="auth-input-group">
+                <span class="material-icons">person</span>
+                <input type="text" id="login-email-username" placeholder="email ou nome de usuário:">
+            </div>
+
+            <div class="auth-input-group">
+                <span class="material-icons">lock</span>
+                <input type="password" id="login-senha" placeholder="senha">
+            </div>
+
+            <button class="submit-btn" onclick="handleLogin()">ENTRAR</button>
+
+            <p class="auth-link" onclick="go('cadastro')">criar uma conta? clique aqui</p>
+        </div>
+
+        <div id="cadastro" class="page auth-page">
+            <div class="auth-logo">PLANETHERO</div>
+            <div class="auth-title">CADASTRO</div>
+
+            <p id="cadastro-error" class="auth-error" style="display:none; color: red;">Por favor, preencha todos os campos.</p>
+
+            <div class="auth-input-group">
+                <span class="material-icons">email</span>
+                <input type="email" id="cadastro-email" placeholder="email :">
+            </div>
+
+            <div class="auth-input-group">
+                <span class="material-icons">person</span>
+                <input type="text" id="cadastro-nome" placeholder="nome de usuário:">
+            </div>
+
+            <div class="auth-input-group">
+                <span class="material-icons">lock</span>
+                <input type="password" id="cadastro-senha" placeholder="senha">
+            </div>
+
+            <button class="submit-btn" onclick="handleCadastro()">CADASTRAR</button>
+            <p class="auth-link" onclick="go('login')">Já tem uma conta? Voltar para o Login</p>
+        </div>
+
+
+        <div id="home" class="page has-navbar">
+            <div class="header">PLANETHERO</div>
+            
+            <h3 class="section-title"><span class="material-icons" style="font-size: 20px; vertical-align: bottom; margin-right: 5px;">list_alt</span> Suas Missões</h3>
+            <div class="card checklist-card">
+                <div id="checklist-container">
+                    
+                    <h4 style="color: var(--green-dark); margin: 0 0 10px 0; font-size: 16px;">Diárias</h4>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="daily1" class="task" data-points="15" data-frequency="daily">
+                        <img src="https://cdn-icons-png.freepik.com/256/1015/1015322.png?semt=ais_white_label" alt="Economizar Energia">
+                        <label for="daily1">Economizar Energia</label>
+                        <span class="points-label">15 pts</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="daily2" class="task" data-points="20" data-frequency="daily">
+                        <img src="https://cdn-icons-png.flaticon.com/512/635/635705.png" alt="Transporte Público">
+                        <label for="daily2">Usar Transporte Público</label>
+                        <span class="points-label">20 pts</span>
+                    </div>
+                    
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+                    
+                    <h4 style="color: var(--green-dark); margin: 10px 0; font-size: 16px;">Semanais</h4>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="weekly1" class="task" data-points="100" data-frequency="weekly">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOBmCaS5plrtkBbIW3kAY6xJ3F-6ZU0xZdTw&s" alt="Ação Ambiental">
+                        <label for="weekly1">Participar de Ação Ambiental</label>
+                        <span class="points-label">100 pts</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="weekly2" class="task" data-points="50" data-frequency="weekly">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVcAHUiyd1D7Qlcgm0GQ2N2RbbJ4pbHGQLWw&s" alt="Consumo">
+                        <label for="weekly2">Evitar Consumo Desnecessário</label>
+                        <span class="points-label">50 pts</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="weekly3" class="task" data-points="75" data-frequency="weekly">
+                        <img src="https://img.freepik.com/vetores-gratis/ilustracao-de-protecao-ambiental-desenhada-a-mao_23-2150089571.jpg?semt=ais_hybrid&w=740&q=80" alt="Hábito Ecológico">
+                        <label for="weekly3">Adotar um Hábito Ecológico</label>
+                        <span class="points-label">75 pts</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="weekly4" class="task" data-points="30" data-frequency="weekly">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaQe9IX_wdPL00OK3GlJh_QLaxJObxx-Xtxg&s" alt="Reduzir Plástico">
+                        <label for="weekly4">Reduzir Consumo de Plástico</label>
+                        <span class="points-label">30 pts</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" onclick="enviarChecklist()">ENVIAR CHECKLIST</button>
+            
+            <h3 class="section-title"><span class="material-icons" style="font-size: 20px; vertical-align: bottom; margin-right: 5px;">school</span> Conteúdos Educativos</h3>
+            <div class="card educational-content-card" onclick="go('conteudos-educativos')">
+                Aprenda a Salvar o Planeta!
+            </div>
+            
+        </div>
+
+        <div id="conteudos-educativos" class="page has-navbar">
+            <div class="header"><a href="#" class="header-back" onclick="go('home')"><span class="material-icons">arrow_back</span></a> Conteúdos Educativos</div>
+            <div class="card" style="margin-top: 25px;">
+                <div class="content-card-detail">
+                    <img src="https://cdn-icons-png.flaticon.com/512/11926/11926677.png" alt="Consumo Consciente">
+                    <div class="content-text">
+                        <h3>CONSUMO CONSCIENTE</h3>
+                        <p>Compre apenas o necessário e evite o excesso.</p>
+                        <p>Dica: Use sacolas reutilizáveis!</p>
+                    </div>
+                </div>
+                
+                <div class="content-card-detail">
+                    <img src="https://cdn-icons-png.flaticon.com/512/13179/13179422.png" alt="Mudanças Climáticas">
+                    <div class="content-text">
+                        <h3>MUDANÇAS CLIMÁTICAS</h3>
+                        <p>Alterações no clima devido à poluição.</p>
+                        <p>Dica: Menos carro, mais bicicleta = Menos poluição!</p>
+                    </div>
+                </div>
+
+                <div class="content-card-detail">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3320/3320628.png  " alt="Reciclagem">
+                    <div class="content-text">
+                        <h3>RECICLAGEM</h3>
+                        <p>Separe o lixo para reutilizar e economizar recursos.</p>
+                        <p>Fato: Reciclar 1 lata economiza 95% da energia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="conquista" class="page has-navbar">
+            <div class="header">CONQUISTA</div>
+
+            <div class="achievement-level">
+                <div class="level-table-icon material-icons" onclick="go('nivel-tabela')">help_outline</div> 
+                <div class="level-badge" id="current-level">N/A</div>
+                <div class="level-title" id="current-level-title">Carregando...</div>
+                
+                <div class="points-value" id="current-points-status">0 pontos para o próximo nível</div> 
+            </div>
+            
+            <button class="achievement-button" onclick="go('medalhas-detalhe')">
+                <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Medalhas">
+                Minhas Medalhas
+            </button>
+
+            <button class="achievement-button" onclick="go('ranking-detalhe')">
+                <img src="https://cdn-icons-png.flaticon.com/512/983/983865.png" alt="Ranking">
+                Ver Ranking Global
+            </button>
+        </div>
+
+        <div id="ranking-detalhe" class="page has-navbar">
+            <div class="header"><a href="#" class="header-back" onclick="go('conquista')"><span class="material-icons">arrow_back</span></a> Ranking Global</div>
+            <ul class="ranking-list" id="ranking-container">
+                </ul>
+        </div>
+
+        <div id="nivel-tabela" class="page has-navbar">
+            <div class="header"><a href="#" class="header-back" onclick="go('conquista')"><span class="material-icons">arrow_back</span></a> Tabela de Níveis</div>
+            <div class="card" style="margin-top: 25px;">
+                <h3 style="color: var(--text-primary); margin-top: 0; text-align: center;">Pontuação Necessária</h3>
+                <div id="level-table-container">
+                    </div>
+            </div>
+        </div>
+
+        <div id="medalhas-detalhe" class="page has-navbar">
+            <div class="header"><a href="#" class="header-back" onclick="go('conquista')"><span class="material-icons">arrow_back</span></a> Minhas Medalhas</div>
+            <div class="ranking-list" id="medalhas-container">
+                 </div>
+        </div>
+
+        <div id="perfil" class="page has-navbar">
+            <div class="header">PERFIL</div>
+
+            <div class="profile-info">
+                <div class="profile-avatar">
+                    <img id="profile-avatar-img" src="https://cdn-icons-png.flaticon.com/512/456/456212.png" alt="Avatar do Usuário">
+                    <span class="material-icons edit-avatar-icon" onclick="go('selecao-avatar')">camera_alt</span>
+                </div>
+                <p class="profile-name" id="profile-name">Nome do Usuário</p>
+                <p class="profile-email" id="profile-email">email@exemplo.com</p>
+            </div>
+
+            <div class="card" style="margin-top: 25px;"> <h3 style="color: var(--text-dark); margin-top: 0;"><span class="material-icons" style="font-size: 20px; vertical-align: bottom; margin-right: 5px;">auto_stories</span> Resumo</h3>
+                <div class="summary-item">
+                    <span>Pontos Acumulados</span>
+                    <span id="total-points-display">0</span> 
+                </div>
+                <div class="summary-item">
+                    <span>Nível Atual</span>
+                    <span id="profile-level">N/A</span> 
+                </div>
+            </div>
+            
+            <button class="feedback-button" onclick="go('feedback')">
+                Feedback e Sugestões
+                <span class="material-icons" style="font-size: 24px; color: var(--text-primary);">chevron_right</span>
+            </button>
+
+            <button class="submit-btn" style="background-color: var(--red-alert); margin-top: 20px;" onclick="handleLogout()">SAIR</button>
+        </div>
+
+        <div id="selecao-avatar" class="page has-navbar">
+            <div class="header"><a href="#" class="header-back" onclick="go('perfil')"><span class="material-icons">arrow_back</span></a> Seleção de Avatar</div>
+            
+            <div class="donation-notice">
+                Os avatares com
+         100% dos valores arrecadados são destinados a ONGs parceiras de sustentabilidade (após a dedução de taxas). Seu apoio faz a diferença!
+            </div>
+            
+            <div class="card" style="margin-top: 15px;">
+                <h3 style="color: var(--text-primary); text-align:center; margin-top: 0;">Escolha seu Herói Ecológico!</h3>
+                <div class="avatar-selection-grid" id="avatar-selection-container">
+                    </div>
+            </div>
+            <button class="submit-btn" onclick="go('perfil')">CONCLUIR</button>
+        </div>
+        <div id="feedback" class="page has-navbar">
+            <div class="header"><a href="#" class="header-back" onclick="go('perfil')"><span class="material-icons">arrow_back</span></a> Feedback</div>
+            
+            <div class="card" style="margin-top: 25px;">
+                <h3 style="color: var(--text-primary); text-align:center; margin-top: 0;">Envie sua sugestão!</h3>
+                <textarea id="feedback-text" rows="5" style="width:100%; border:1px solid #ccc; border-radius:10px; padding:10px; box-sizing:border-box; font-family: 'Poppins', sans-serif;" placeholder="Digite seu feedback ou sugestão. Ajude-nos a salvar o planeta!"></textarea>
+                <button class="submit-btn" style="width:100%; margin: 10px 0 0 0; background-color: var(--green-dark);" onclick="sendFeedback()">ENVIAR</button>
+            </div>
+
+            <div id="feedback-success" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color:white; padding:30px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.5); text-align:center; z-index: 50;">
+                <p style="color: var(--text-primary); font-weight:700;">Obrigado pelo feedback, agradecemos pela sua colaboração!</p>
+                <button class="submit-btn" style="width:100px; margin-top:10px;" onclick="closeFeedbackSuccess()">OK</button>
+            </div>
+        </div>
+
+        <div class="navbar">
+            <div class="nav-item active" data-page="home" onclick="go('home', this)">
+                <span class="material-icons">home</span>
+            </div>
+            <div class="nav-item" data-page="conquista" onclick="go('conquista', this)">
+                <span class="material-icons">military_tech</span>
+            </div>
+            <div class="nav-item" data-page="perfil" onclick="go('perfil', this)">
+                <span class="material-icons">person</span>
+            </div>
+        </div>
+        
+        <div id="custom-alert-overlay" class="custom-alert-overlay">
+            <div id="custom-alert-box" class="custom-alert-box">
+                <span id="custom-alert-icon" class="custom-alert-icon"></span>
+                <div id="custom-alert-title" class="custom-alert-title"></div>
+                <div id="custom-alert-message" class="custom-alert-message"></div>
+                <button id="custom-alert-btn" class="custom-alert-btn" onclick="hideCustomAlert()">OK</button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    // Variáveis globais
+    let currentScore = 0;
+    let completedTasks = {}; // { taskId: true/false }
+    let USER_DATA = null; 
+    let LOGGED_IN = false;
+    let unlockedAvatars = ['default']; // Array de IDs desbloqueados
+    let selectedAvatarId = 'default';
+    
+    // Variáveis de controle de reset de tarefas (usando o formato YYYY-MM-DD)
+    let lastDailyReset = localStorage.getItem('lastDailyReset') || new Date(0).toISOString().split('T')[0];
+    let lastWeeklyReset = localStorage.getItem('lastWeeklyReset') || new Date(0).toISOString().split('T')[0];
+    
+    // Configuração de Níveis 
+    const LEVEL_CONFIG = [
+        { level: 1, points: 0, title: "Semente Verde" },
+        { level: 2, points: 500, title: "Broto Consciente" },
+        { level: 3, points: 1000, title: "Guardião da Terra" },
+        { level: 4, points: 1500, title: "Herói Ecológico" },
+        { level: 5, points: 2000, title: "Lenda do Planeta" }
+    ];
+
+    const MEDAL_CONFIG = [
+        { id: 1, name: "Eco-Iniciante", requiredPoints: 100, icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png" },
+        { id: 2, name: "Mãos na Terra", requiredPoints: 500, icon: "https://cdn-icons-png.flaticon.com/512/190/190412.png" },
+        { id: 3, name: "Mestre Verde", requiredPoints: 1500, icon: "https://cdn-icons-png.flaticon.com/512/190/190413.png" },
+    ];
+    
+    // Configuração dos Avatares (AGORA COM CUSTO MISTO R$ OU PONTOS)
+    const AVATAR_CONFIG = [
+        { id: 'default', name: "Herói Padrão", url: "https://cdn-icons-png.flaticon.com/512/456/456212.png", costR: 0.00, costPoints: 0 }, 
+        { id: 'guardia', name: "Guardiã da Natureza", url: "https://cdn-icons-png.flaticon.com/512/11925/11925615.png", costR: 1.00, costPoints: 0 }, // Custo R$
+        { id: 'reciclagem', name: "Mestre da Reciclagem", url: "https://cdn-icons-png.flaticon.com/512/4140/4140046.png", costR: 0.00, costPoints: 500 }, // Custo Pontos
+        { id: 'solar', name: "Especialista em Energia Solar", url: "https://cdn-icons-png.flaticon.com/512/4140/4140047.png", costR: 2.00, costPoints: 0 }, // Custo R$
+        { id: 'plantio', name: "Semeador", url: "https://cdn-icons-png.flaticon.com/512/4140/4140048.png", costR: 0.00, costPoints: 1000 }, // Custo Pontos
+        { id: 'oceano', name: "Defensor do Oceano", url: "https://cdn-icons-png.flaticon.com/512/4140/4140051.png", costR: 5.00, costPoints: 0 } // Custo R$
+    ];
+
+    
+    // Dados Fictícios para Ranking
+    const FIXED_RANKING_DATA = [
+        { nome: "Melisa", score: 3500, avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140048.png" },
+        { nome: "Pedro", score: 2800, avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140049.png" },
+        { nome: "Rafaela", score: 2000, avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140050.png" },
+        { nome: "Felipe", score: 1800, avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140051.png" },
+    ];
+    
+    // Função principal de navegação
+    function go(pageId, navItem = null) {
+        
+        if (!LOGGED_IN && pageId !== 'login' && pageId !== 'cadastro') {
+            pageId = 'login';
+        }
+
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+            targetPage.classList.add("active");
+            targetPage.scrollTop = 0;
+        }
+
+        const isAppPage = targetPage && targetPage.classList.contains('has-navbar');
+        document.querySelector('.navbar').style.display = isAppPage ? 'flex' : 'none';
+
+        if (LOGGED_IN) {
+            if (pageId === 'home') { loadChecklistState(); }
+            if (pageId === 'perfil') { updateProfileDisplay(); updateScoreDisplay(); }
+            if (pageId === 'conquista') { updateScoreDisplay(); }
+            if (pageId === 'ranking-detalhe') { renderRanking(); }
+            if (pageId === 'medalhas-detalhe') { renderMedals(); }
+            if (pageId === 'nivel-tabela') { renderLevelTable(); }
+            if (pageId === 'selecao-avatar') { renderAvatarSelection(); } 
+        }
+        
+        document.querySelectorAll(".nav-item").forEach(item => { item.classList.remove("active"); });
+        
+        if (navItem) {
+            navItem.classList.add('active');
+        } else if (isAppPage) {
+            document.querySelectorAll(".nav-item").forEach(item => {
+                if (item.dataset.page === pageId || 
+                   (['ranking-detalhe', 'medalhas-detalhe', 'nivel-tabela'].includes(pageId) && item.dataset.page === 'conquista') ||
+                   (pageId === 'feedback' && item.dataset.page === 'perfil') ||
+                   (pageId === 'selecao-avatar' && item.dataset.page === 'perfil') || 
+                   (pageId === 'conteudos-educativos' && item.dataset.page === 'home')) {
+                    item.classList.add('active');
+                }
+            });
+        }
+    }
+
+
+    // ===========================
+    // LÓGICA DE ALERTA CUSTOMIZADO
+    // ===========================
+
+    function showCustomAlert(title, message, isSuccess = true) {
+        const overlay = document.getElementById('custom-alert-overlay');
+        const box = document.getElementById('custom-alert-box');
+        const icon = document.getElementById('custom-alert-icon');
+        const titleEl = document.getElementById('custom-alert-title');
+        const messageEl = document.getElementById('custom-alert-message');
+        
+        box.className = 'custom-alert-box ' + (isSuccess ? 'success' : 'info');
+        icon.textContent = isSuccess ? 'check_circle' : 'info';
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+        
+        overlay.style.display = 'flex';
+        setTimeout(() => {
+            overlay.classList.add('visible');
+        }, 10); 
+    }
+
+    function hideCustomAlert() {
+        const overlay = document.getElementById('custom-alert-overlay');
+        overlay.classList.remove('visible');
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 200); 
+    }
+
+
+    // ===========================
+    // LÓGICA DE PERSISTÊNCIA E LOGIN
+    // ===========================
+
+    function saveUserState(userData) {
+        const key = userData.nome || userData.email;
+        const allUsersData = JSON.parse(localStorage.getItem('allPlanetHeroUsers')) || {};
+        
+        // Determina a URL do avatar com base no ID selecionado
+        const currentAvatarConfig = AVATAR_CONFIG.find(a => a.id === selectedAvatarId);
+        const avatarUrlToSave = currentAvatarConfig ? currentAvatarConfig.url : AVATAR_CONFIG[0].url;
+
+        allUsersData[key] = {
+            email: userData.email,
+            nome: userData.nome,
+            senha: userData.senha,
+            score: currentScore,
+            completedTasks: completedTasks,
+            avatarUrl: avatarUrlToSave, 
+            selectedAvatarId: selectedAvatarId,
+            unlockedAvatars: unlockedAvatars 
+        };
+        
+        localStorage.setItem('allPlanetHeroUsers', JSON.stringify(allUsersData));
+        localStorage.setItem('currentUserKey', key);
+        
+        // Salva as datas de reset junto com o estado do usuário
+        localStorage.setItem('lastDailyReset', lastDailyReset);
+        localStorage.setItem('lastWeeklyReset', lastWeeklyReset);
+    }
+
+    function loadUserState(input) {
+        const allUsersData = JSON.parse(localStorage.getItem('allPlanetHeroUsers')) || {};
+        let state = allUsersData[input];
+        
+        if (!state) {
+            for (const key in allUsersData) {
+                if (allUsersData[key].email === input || allUsersData[key].nome === input) {
+                    state = allUsersData[key];
+                    break;
+                }
+            }
+        }
+
+        if (state) {
+            currentScore = state.score;
+            completedTasks = state.completedTasks || {}; 
+            unlockedAvatars = state.unlockedAvatars || ['default']; 
+            selectedAvatarId = state.selectedAvatarId || 'default'; // CARREGA ID SELECIONADO
+            
+            // Garante que o avatarUrl carregado seja o correto com base no ID
+            const avatarConfig = AVATAR_CONFIG.find(a => a.id === selectedAvatarId);
+            const avatarUrl = avatarConfig ? avatarConfig.url : AVATAR_CONFIG[0].url;
+            
+            USER_DATA = { 
+                email: state.email, 
+                nome: state.nome, 
+                senha: state.senha,
+                avatarUrl: avatarUrl,
+                unlockedAvatars: unlockedAvatars 
+            };
+            LOGGED_IN = true;
+            
+            // Carrega as datas de reset
+            lastDailyReset = localStorage.getItem('lastDailyReset') || new Date(0).toISOString().split('T')[0];
+            lastWeeklyReset = localStorage.getItem('lastWeeklyReset') || new Date(0).toISOString().split('T')[0];
+            
+            return true;
+        }
+        return false;
+    }
+
+    function handleCadastro() {
+        const email = document.getElementById('cadastro-email').value.trim();
+        const nome = document.getElementById('cadastro-nome').value.trim();
+        const senha = document.getElementById('cadastro-senha').value;
+        const errorBox = document.getElementById('cadastro-error');
+        errorBox.style.display = 'none';
+
+        if (!email || !nome || !senha) {
+            errorBox.textContent = "Por favor, preencha todos os campos.";
+            errorBox.style.display = 'block';
+            return;
+        }
+        
+        const allUsersData = JSON.parse(localStorage.getItem('allPlanetHeroUsers')) || {};
+        if (allUsersData[nome] || Object.values(allUsersData).some(u => u.email === email)) {
+            errorBox.textContent = "Nome de usuário ou email já cadastrado.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        currentScore = 0;
+        completedTasks = {};
+        lastDailyReset = new Date().toISOString().split('T')[0];
+        lastWeeklyReset = new Date().toISOString().split('T')[0];
+        
+        unlockedAvatars = ['default']; 
+        selectedAvatarId = 'default';
+
+        const newUserData = { 
+            email, 
+            nome, 
+            senha, 
+            avatarUrl: AVATAR_CONFIG[0].url,
+            unlockedAvatars: unlockedAvatars 
+        };
+        
+        saveUserState(newUserData); 
+        
+        showCustomAlert("Bem-vindo(a)!", `Cadastro de **${nome}** realizado com sucesso! Faça o login para começar a salvar o planeta.`, true);
+        go('login');
+    }
+
+    function handleLogin() {
+        const input = document.getElementById('login-email-username').value.trim();
+        const senha = document.getElementById('login-senha').value;
+        const errorBox = document.getElementById('login-error');
+        errorBox.style.display = 'none';
+
+        if (!input || !senha) {
+            errorBox.textContent = "Por favor, preencha todos os campos.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        const userLoaded = loadUserState(input); 
+
+        if (userLoaded && USER_DATA.senha === senha) {
+            showCustomAlert("Login Efetuado!", `Bem-vindo(a) de volta, ${USER_DATA.nome}! Seu score atual é de ${currentScore.toLocaleString('pt-BR')} pontos.`, true);
+            go('home', document.querySelector('.nav-item[data-page="home"]'));
+        } else {
+            errorBox.textContent = "Email/Usuário ou senha inválidos.";
+            errorBox.style.display = 'block';
+            LOGGED_IN = false;
+            USER_DATA = null;
+        }
+    }
+
+    function handleLogout() {
+        if (LOGGED_IN && USER_DATA) { saveUserState(USER_DATA); }
+        LOGGED_IN = false;
+        USER_DATA = null;
+        localStorage.removeItem('currentUserKey');
+        showCustomAlert("Sessão Encerrada", "Você saiu da sua conta. Esperamos você em breve!", false);
+        go('login'); 
+    }
+
+    function updateProfileDisplay() {
+        if (USER_DATA) {
+            document.getElementById('profile-name').textContent = USER_DATA.nome;
+            document.getElementById('profile-email').textContent = USER_DATA.email;
+            
+            // Recarrega a URL correta do avatar (caso tenha sido alterada)
+            const avatarConfig = AVATAR_CONFIG.find(a => a.id === selectedAvatarId);
+            document.getElementById('profile-avatar-img').src = avatarConfig ? avatarConfig.url : AVATAR_CONFIG[0].url;
+        }
+    }
+
+
+    // ===========================
+    // LÓGICA DE AVATAR (COMPRA R$ E SELEÇÃO)
+    // ===========================
+    
+    function buyAvatarWithPoints(avatarId, costPoints) {
+        if (!LOGGED_IN) return showCustomAlert("Erro", "Você precisa estar logado para comprar avatares.", false);
+        
+        if (unlockedAvatars.includes(avatarId)) {
+            return showCustomAlert("Aviso", "Este avatar já está desbloqueado!", false);
+        }
+
+        if (currentScore < costPoints) {
+            return showCustomAlert("Pontos Insuficientes", `Você precisa de ${costPoints.toLocaleString('pt-BR')} pontos. Seu score atual é de ${currentScore.toLocaleString('pt-BR')}.`, false);
+        }
+
+        if (!confirm(`Confirma a compra? Você usará ${costPoints.toLocaleString('pt-BR')} pontos.`)) {
+            return;
+        }
+
+        // Processa a compra
+        currentScore -= costPoints;
+        unlockedAvatars.push(avatarId);
+        saveUserState(USER_DATA);
+        
+        showCustomAlert("Sucesso!", `Avatar desbloqueado por ${costPoints.toLocaleString('pt-BR')} pontos. Seu novo score é: **${currentScore.toLocaleString('pt-BR')}**.`, true);
+        
+        selectAvatar(avatarId); 
+        renderAvatarSelection(); 
+        updateScoreDisplay(); 
+    }
+
+    function buyAvatar(avatarId, costR) {
+        if (!LOGGED_IN) return showCustomAlert("Erro", "Você precisa estar logado para comprar avatares.", false);
+        
+        if (unlockedAvatars.includes(avatarId)) {
+            return showCustomAlert("Aviso", "Este avatar já está desbloqueado!", false);
+        }
+
+        const formattedCost = costR.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        if (!confirm(`Confirma a compra? Você será redirecionado para a página de pagamento para adquirir este avatar por ${formattedCost}. Lembre-se, o valor arrecadado é destinado à sustentabilidade!`)) {
+            return;
+        }
+
+        // SIMULAÇÃO DE PAGAMENTO BEM SUCEDIDO
+        // Em um app real, aqui haveria uma integração com API de pagamento.
+        showCustomAlert("Pagamento Simulada!", `Compra de ${formattedCost} simulada com sucesso. Seu novo avatar foi desbloqueado, e você apoiou a causa!`, true);
+
+        // Desbloqueia e salva o estado
+        unlockedAvatars.push(avatarId);
+        saveUserState(USER_DATA);
+        
+        selectAvatar(avatarId); 
+        renderAvatarSelection(); 
+    }
+
+    function renderAvatarSelection() {
+        const container = document.getElementById('avatar-selection-container');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        AVATAR_CONFIG.forEach(avatar => {
+            const isSelected = selectedAvatarId === avatar.id;
+            const isUnlocked = unlockedAvatars.includes(avatar.id);
+            
+            const card = document.createElement('div');
+            card.className = `avatar-card ${isSelected ? 'selected' : ''} ${!isUnlocked ? 'locked' : ''}`;
+
+            let actionHtml;
+            let onClickAction;
+            
+            // Lógica de custo (R$ ou Pontos)
+            const costR = avatar.costR;
+            const costPoints = avatar.costPoints;
+
+            if (isUnlocked) {
+                actionHtml = `<p>${avatar.name}</p>`;
+                onClickAction = `selectAvatar('${avatar.id}')`;
+                card.setAttribute('onclick', onClickAction);
+            } else if (costR > 0) {
+                // Custo em R$
+                const formattedCostR = costR.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                actionHtml = `
+                    <p style="font-size: 11px; margin-bottom: 5px; color: #777;">Comprar e Doar</p>
+                    <button class="cost-btn cost-r" onclick="buyAvatar('${avatar.id}', ${costR}); event.stopPropagation();">
+                        ${formattedCostR}
+                    </button>
+                `;
+                onClickAction = `buyAvatar('${avatar.id}', ${costR})`;
+                card.setAttribute('onclick', onClickAction); // Clica no card para tentar comprar
+            } else if (costPoints > 0) {
+                 // Custo em Pontos
+                actionHtml = `
+                    <p style="font-size: 11px; margin-bottom: 5px; color: #777;">Desbloquear com Pontos</p>
+                    <button class="cost-btn cost-points" onclick="buyAvatarWithPoints('${avatar.id}', ${costPoints}); event.stopPropagation();">
+                        ${costPoints.toLocaleString('pt-BR')} pts
+                    </button>
+                `;
+                onClickAction = `buyAvatarWithPoints('${avatar.id}', ${costPoints})`;
+                card.setAttribute('onclick', onClickAction); // Clica no card para tentar comprar
+            }
+
+            card.innerHTML = `
+                <img src="${avatar.url}" alt="${avatar.name}" style="${!isUnlocked ? 'filter: grayscale(100%); opacity: 0.7;' : ''}">
+                ${actionHtml}
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function selectAvatar(avatarId) {
+        if (!LOGGED_IN) return;
+
+        if (!unlockedAvatars.includes(avatarId)) {
+            const avatar = AVATAR_CONFIG.find(a => a.id === avatarId);
+            if (!avatar) return;
+
+            if (avatar.costR > 0) {
+                const formattedCost = avatar.costR.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                showCustomAlert("Bloqueado", `Este avatar custa ${formattedCost} (R$) e está bloqueado.`, false);
+            } else if (avatar.costPoints > 0) {
+                showCustomAlert("Bloqueado", `Este avatar custa ${avatar.costPoints.toLocaleString('pt-BR')} pontos e está bloqueado.`, false);
+            }
+            return;
+        }
+
+        const selectedAvatar = AVATAR_CONFIG.find(a => a.id === avatarId);
+        
+        if (selectedAvatar) {
+            selectedAvatarId = selectedAvatar.id;
+            USER_DATA.avatarUrl = selectedAvatar.url; // Atualiza a URL no USER_DATA (compatibilidade)
+            saveUserState(USER_DATA); 
+            
+            document.querySelectorAll('.avatar-card').forEach(card => card.classList.remove('selected'));
+            
+            // Encontra o card correto para marcar como selecionado
+            const cardToSelect = document.querySelector(`.avatar-card[onclick*="selectAvatar('${avatarId}')"]`);
+            if(cardToSelect) cardToSelect.classList.add('selected');
+            
+            updateProfileDisplay();
+        }
+    }
+    // ===========================
+    // FIM DA LÓGICA DE AVATAR
+    // ===========================
+
+    // ===========================
+    // LÓGICA DE CHECKLIST/SCORE/CONQUISTA E RESET
+    // ===========================
+
+    // Verifica se é um novo dia (reseta Daily)
+    function isNewDay(lastDate) {
+        const today = new Date().toISOString().split('T')[0];
+        return today !== lastDate;
+    }
+
+    // Verifica se 7 dias se passaram (reseta Weekly)
+    function isNewWeek(lastDate) {
+        const today = new Date();
+        const last = new Date(lastDate);
+        // Calcular a diferença em dias
+        const oneDay = 24 * 60 * 60 * 1000;
+        const diffDays = Math.round(Math.abs((today.getTime() - last.getTime()) / oneDay));
+        return diffDays >= 7; 
+    }
+    
+    function loadChecklistState() {
+        if (!LOGGED_IN) return; 
+
+        const todayDateStr = new Date().toISOString().split('T')[0];
+
+        // --- Lógica de Reset Diário ---
+        if (isNewDay(lastDailyReset)) {
+            document.querySelectorAll(".task[data-frequency='daily']").forEach(t => {
+                delete completedTasks[t.id];
+            });
+            localStorage.setItem('lastDailyReset', todayDateStr);
+            lastDailyReset = todayDateStr;
+        }
+
+        // --- Lógica de Reset Semanal ---
+        if (isNewWeek(lastWeeklyReset)) {
+            document.querySelectorAll(".task[data-frequency='weekly']").forEach(t => {
+                delete completedTasks[t.id];
+            });
+            localStorage.setItem('lastWeeklyReset', todayDateStr);
+            lastWeeklyReset = todayDateStr;
+        }
+        
+        // Atualiza o estado visual dos checkboxes
+        const tasks = document.querySelectorAll("#checklist-container .task");
+        tasks.forEach(t => {
+            const taskId = t.id;
+            const itemElement = t.closest('.checklist-item');
+
+            if (completedTasks[taskId]) {
+                t.checked = true;
+                t.disabled = true; 
+                itemElement.style.opacity = '0.6';
+            } else {
+                t.checked = false;
+                t.disabled = false;
+                itemElement.style.opacity = '1';
+            }
+        });
+    }
+
+    function enviarChecklist() {
+        if (!LOGGED_IN) {
+            return showCustomAlert("Erro", "Você precisa estar logado para enviar o checklist.", false);
+        }
+
+        let tasks = document.querySelectorAll("#checklist-container .task");
+        let totalPoints = 0;
+
+        tasks.forEach(t => {
+            const taskId = t.id;
+            if (t.checked && !completedTasks[taskId]) {
+                totalPoints += parseInt(t.dataset.points) || 0;
+                completedTasks[taskId] = true; 
+            }
+        });
+
+        if (totalPoints > 0) {
+            currentScore += totalPoints;
+            saveUserState(USER_DATA);
+            
+            showCustomAlert("Missão Cumprida!", `Parabéns, você ganhou **${totalPoints} pontos**! Seu score total agora é: **${currentScore.toLocaleString('pt-BR')}**.`, true); 
+        } else {
+             showCustomAlert("Aviso", "Nenhuma nova tarefa concluída para ganhar pontos.", false);
+        }
+        
+        loadChecklistState(); 
+        updateScoreDisplay(); 
+
+        document.getElementById('home').scrollTop = 0; 
+    }
+
+    function getCurrentLevel() {
+        let currentLevel = LEVEL_CONFIG[0];
+        let nextLevel = null;
+        
+        // Encontra o nível atual
+        for (const level of LEVEL_CONFIG) {
+            if (currentScore >= level.points) {
+                currentLevel = level;
+            } else {
+                nextLevel = level;
+                break;
+            }
+        }
+        
+        return { current: currentLevel, next: nextLevel };
+    }
+
+    function updateScoreDisplay() {
+        const levelData = getCurrentLevel();
+        
+        const formattedScore = currentScore.toLocaleString('pt-BR');
+
+        // Perfil
+        const totalPointsDisplay = document.getElementById('total-points-display');
+        if (totalPointsDisplay) totalPointsDisplay.textContent = formattedScore;
+
+        const profileLevel = document.getElementById('profile-level');
+        if (profileLevel) profileLevel.textContent = `Nível ${levelData.current.level}`;
+
+        // Conquista
+        const currentLevel = document.getElementById('current-level');
+        if (currentLevel) currentLevel.textContent = levelData.current.level;
+        
+        const currentLevelTitle = document.getElementById('current-level-title');
+        if (currentLevelTitle) currentLevelTitle.textContent = levelData.current.title;
+
+        const currentPointsStatus = document.getElementById('current-points-status');
+        if (currentPointsStatus) {
+            if (levelData.next) {
+                const pointsNeeded = levelData.next.points - currentScore;
+                currentPointsStatus.textContent = `${pointsNeeded.toLocaleString('pt-BR')} pontos para o Nível ${levelData.next.level}`;
+            } else {
+                currentPointsStatus.textContent = `Parabéns! Você alcançou o nível máximo: ${levelData.current.level}`;
+            }
+        }
+    }
+    
+    // ===========================
+    // LÓGICA DE RANKING, MEDALHAS E TABELA DE NÍVEIS
+    // ===========================
+
+    function renderLevelTable() {
+        const container = document.getElementById('level-table-container');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        // Renderiza do maior nível para o menor
+        const reversedLevels = [...LEVEL_CONFIG].reverse();
+
+        reversedLevels.forEach(level => {
+            const item = document.createElement('div');
+            item.className = 'level-card-item';
+            
+            item.innerHTML = `
+                <span>Nível ${level.level}</span>
+                <span>${level.points.toLocaleString('pt-BR')} pontos</span>
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    function getFullRankingList() {
+        let rankingList = [...FIXED_RANKING_DATA];
+        
+        // Adiciona todos os usuários (exceto os já fixados para simulação)
+        const allUsersData = JSON.parse(localStorage.getItem('allPlanetHeroUsers')) || {};
+        for (const key in allUsersData) {
+            const userData = allUsersData[key];
+            const isFixed = FIXED_RANKING_DATA.some(u => u.nome === userData.nome);
+            if (!isFixed) {
+                rankingList.push({ 
+                    nome: userData.nome, 
+                    score: userData.score, 
+                    avatar: userData.avatarUrl 
+                });
+            }
+        }
+
+        // Garante que o usuário atual (se logado) esteja na lista com o score atualizado
+        if (USER_DATA) {
+             rankingList = rankingList.filter(u => u.nome !== USER_DATA.nome);
+            rankingList.push({ 
+                nome: USER_DATA.nome, 
+                score: currentScore, 
+                avatar: USER_DATA.avatarUrl
+            });
+        }
+        
+        rankingList.sort((a, b) => b.score - a.score);
+        
+        return rankingList;
+    }
+
+    function renderRanking() {
+        const rankingContainer = document.getElementById('ranking-container');
+        if (!rankingContainer) return;
+        
+        rankingContainer.innerHTML = '';
+        
+        const fullRanking = getFullRankingList();
+        
+        fullRanking.forEach((user, index) => {
+            const rank = index + 1;
+            const isCurrentUser = USER_DATA && user.nome === USER_DATA.nome && user.score === currentScore;
+            
+            const listItem = document.createElement('li');
+            listItem.className = `ranking-item ${isCurrentUser ? 'user-highlight' : ''}`;
+            
+            listItem.innerHTML = `
+                <span class="rank-number">${rank}º</span>
+                <div class="rank-info">
+                    <img class="rank-avatar " src="${user.avatar}" alt="Avatar">
+                    <span class="rank-name">${user.nome}</span>
+                </div>
+                <span class="rank-points">${user.score.toLocaleString('pt-BR')} pts</span>
+            `;
+            
+            rankingContainer.appendChild(listItem);
+        });
+    }
+    
+    function renderMedals() {
+        const medalsContainer = document.getElementById('medalhas-container');
+        if (!medalsContainer) return;
+        
+        medalsContainer.innerHTML = '';
+        
+        const earnedMedals = MEDAL_CONFIG.filter(medal => currentScore >= medal.requiredPoints);
+        const unearnedMedals = MEDAL_CONFIG.filter(medal => currentScore < medal.requiredPoints);
+
+        if (earnedMedals.length > 0) {
+            medalsContainer.innerHTML += '<h3 style="margin: 15px; color: var(--text-primary);">Conquistadas:</h3>';
+
+            earnedMedals.forEach(medal => {
+                const item = document.createElement('div');
+                item.className = 'medal-item';
+                item.innerHTML = `
+                    <img src="${medal.icon}" alt="${medal.name}">
+                    <span>${medal.name}</span>
+                `;
+                medalsContainer.appendChild(item);
+            });
+        }
+
+        if (unearnedMedals.length > 0) {
+            medalsContainer.innerHTML += '<h3 style="margin: 15px; color: #777;">Próximas Medalhas:</h3>';
+            
+            unearnedMedals.forEach(medal => {
+                const pointsNeeded = medal.requiredPoints - currentScore;
+                const item = document.createElement('div');
+                item.className = 'medal-item';
+                item.style.opacity = '0.5';
+                item.innerHTML = `
+                    <img src="${medal.icon}" alt="${medal.name}" style="filter: grayscale(100%);">
+                    <div>
+                        <span>${medal.name}</span><br>
+                        <span style="font-weight: 400; font-size: 13px; color: #777;">Faltam ${pointsNeeded.toLocaleString('pt-BR')} pontos</span>
+                    </div>
+                `;
+                medalsContainer.appendChild(item);
+            });
+        }
+        
+        if (earnedMedals.length === 0 && unearnedMedals.length > 0) {
+            medalsContainer.innerHTML = '<p style="text-align: center; padding: 20px; color: #555;">Continue ganhando pontos para desbloquear sua primeira medalha!</p>' + medalsContainer.innerHTML;
+        }
+    }
+    
+    // ===========================
+    // LÓGICA DE FEEDBACK
+    // ===========================
+
+    function sendFeedback() {
+        const feedbackText = document.getElementById('feedback-text').value;
+        if (feedbackText.trim() !== "") {
+            document.getElementById('feedback-success').style.display = 'block';
+            document.getElementById('feedback-text').value = '';
+        } else {
+            showCustomAlert("Aviso", "Por favor, digite seu feedback ou sugestão.", false);
+        }
+    }
+
+    function closeFeedbackSuccess() {
+        document.getElementById('feedback-success').style.display = 'none';
+        go('perfil');
+    }
+
+    // Inicializa a aplicação
+    document.addEventListener('DOMContentLoaded', () => {
+        const lastUserKey = localStorage.getItem('currentUserKey');
+        // Se o usuário já estava logado, carrega o estado, senão, apenas garante que a tela de login esteja ativa.
+        if (lastUserKey && loadUserState(lastUserKey)) {
+            go('home', document.querySelector('.nav-item[data-page="home"]'));
+        } else {
+            // Garante que a página de login esteja visível ao carregar.
+            document.getElementById('login').classList.add('active');
+            document.querySelector('.navbar').style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>
